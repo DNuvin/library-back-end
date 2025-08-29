@@ -46,10 +46,10 @@ pipeline {
                     dir("k3s/${DEPLOY_ENV}") {
                         sh """
                         kubectl --kubeconfig=${KUBECONFIG} create configmap ${DEPLOY_ENV}-config \
-                            --from-env-file=config.env --dry-run=client -o yaml | kubectl apply -f -
+                            --from-env-file=config.env -n dev --dry-run=client -o yaml | kubectl apply -f -
 
                         kubectl --kubeconfig=${KUBECONFIG} create secret generic ${DEPLOY_ENV}-secret \
-                            --from-env-file=secret.env --dry-run=client -o yaml | kubectl apply -f -
+                            --from-env-file=secret.env -n dev --dry-run=client -o yaml | kubectl apply -f -
                         """
                     }
                 }
