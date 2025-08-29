@@ -45,10 +45,10 @@ pipeline {
                 script {
                     dir("k3s/${DEPLOY_ENV}") {
                         sh """
-                        kubectl --kubeconfig=${KUBECONFIG} create configmap ${DEPLOY_ENV}-config \
+                        sudo kubectl --kubeconfig=${KUBECONFIG} create configmap ${DEPLOY_ENV}-config \
                             --from-env-file=config.env -n dev --dry-run=client -o yaml | kubectl apply -f -
 
-                        kubectl --kubeconfig=${KUBECONFIG} create secret generic ${DEPLOY_ENV}-secret \
+                        sudo kubectl --kubeconfig=${KUBECONFIG} create secret generic ${DEPLOY_ENV}-secret \
                             --from-env-file=secret.env -n dev --dry-run=client -o yaml | kubectl apply -f -
                         """
                     }
@@ -60,7 +60,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    kubectl --kubeconfig=${KUBECONFIG} set image deployment/library \
+                    sudo kubectl --kubeconfig=${KUBECONFIG} set image deployment/library \
                         library-container=${IMAGE_NAME}:${IMAGE_TAG} -n ${DEPLOY_ENV} --record
                     """
                 }
