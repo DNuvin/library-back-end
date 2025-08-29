@@ -60,7 +60,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    kubectl --kubeconfig=${KUBECONFIG} set image deployment/library-app \
+                    kubectl --kubeconfig=${KUBECONFIG} set image deployment/library \
                         library-container=${IMAGE_NAME}:${IMAGE_TAG} -n ${DEPLOY_ENV} --record
                     """
                 }
