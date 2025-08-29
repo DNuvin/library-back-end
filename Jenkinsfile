@@ -3,8 +3,10 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'dewuruge/library'
-        IMAGE_TAG = "${env.GIT_COMMIT.take(7)}"  // unique tag based on commit SHA
-        DOCKER_CREDENTIALS = 'dockerhub-credentials' // Jenkins credentials ID for Docker Hub
+        IMAGE_TAG = "${env.GIT_COMMIT.take(7)}" // short SHA as tag
+        DOCKER_CREDENTIALS = 'dockerhub-credentials'
+        KUBECONFIG = '/etc/rancher/k3s/k3s.yaml' // adjust path if different
+        DEPLOY_ENV = 'dev'  // can parametrize this for dev/stg/prod
     }
 
     stages {
@@ -16,7 +18,6 @@ pipeline {
 
         stage('Build JAR') {
             steps {
-                // Build the project using Maven wrapper
                 sh './mvnw clean package -DskipTests'
             }
         }
@@ -24,7 +25,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image with unique tag
                     sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
                 }
             }
@@ -33,10 +33,36 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Push the image to Docker Hub using credentials
                     docker.withRegistry('', "${DOCKER_CREDENTIALS}") {
                         sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
                     }
+                }
+            }
+        }
+
+        stage('Apply Config & Secrets') {
+            steps {
+                script {
+                    dir("k3s/${DEPLOY_ENV}") {
+                        sh """
+                        kubectl --kubeconfig=${KUBECONFIG} create configmap ${DEPLOY_ENV}-config \
+                            --from-env-file=config.env --dry-run=client -o yaml | kubectl apply -f -
+
+                        kubectl --kubeconfig=${KUBECONFIG} create secret generic ${DEPLOY_ENV}-secret \
+                            --from-env-file=secret.env --dry-run=client -o yaml | kubectl apply -f -
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh """
+                    kubectl --kubeconfig=${KUBECONFIG} set image deployment/library-app \
+                        library-container=${IMAGE_NAME}:${IMAGE_TAG} -n ${DEPLOY_ENV} --record
+                    """
                 }
             }
         }
@@ -44,7 +70,6 @@ pipeline {
 
     post {
         always {
-            // Clean workspace after build
             cleanWs()
         }
     }
