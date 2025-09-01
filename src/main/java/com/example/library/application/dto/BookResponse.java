@@ -1,24 +1,19 @@
-package com.example.library.model;
+package com.example.library.application.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Book {
+public class BookResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String isbn;
     private String title;
     private String author;
+    private Long borrowerId;
 
-    @ManyToOne
-    private Borrower borrower; // nullable if not borrowed
+
 }

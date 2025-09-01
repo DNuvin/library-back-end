@@ -1,25 +1,24 @@
-package com.example.library.model;
+package com.example.library.external.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Borrower {
+public class Book {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String email;
+    private String isbn;
+    private String title;
+    private String author;
 
-    @OneToMany(mappedBy = "borrower")
-    private List<Book> borrowedBooks;
+    @ManyToOne
+    private Borrower borrower; // nullable if not borrowed
 }
-
