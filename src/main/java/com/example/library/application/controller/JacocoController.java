@@ -8,9 +8,7 @@ public class JacocoController {
 
     @GetMapping("/coverage")
     public String coverage() {
-        // Redirect ensures browser URL matches resource handler
+        // Redirect so browser URL matches resource handler
         return "redirect:/coverage/index.html";
     }
-
 }
-

@@ -6,14 +6,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfigCoverage implements WebMvcConfigurer {
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-
+        // Serve JaCoCo report from filesystem
         registry.addResourceHandler("/coverage/**")
-                .addResourceLocations("classpath:/static/jacoco/")
+                .addResourceLocations("file:/app/static/jacoco/")
                 .setCachePeriod(0);
-
-
     }
 }
-
