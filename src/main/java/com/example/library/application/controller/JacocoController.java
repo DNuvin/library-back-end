@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class JacocoController {
+
     @GetMapping("/coverage")
     public String coverage() {
-        return "forward:/static/jacoco/index.html";
+        return "forward:/jacoco/index.html";
     }
+
 }
