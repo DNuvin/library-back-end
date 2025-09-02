@@ -55,8 +55,10 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                docker.withRegistry('', "${DOCKER_CREDENTIALS}") {
-                    sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+                script {
+                    docker.withRegistry('', "${DOCKER_CREDENTIALS}") {
+                        sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+                    }
                 }
             }
         }
