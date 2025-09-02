@@ -8,7 +8,9 @@ public class JacocoController {
 
     @GetMapping("/coverage")
     public String coverage() {
-        return "forward:/jacoco/index.html";
+        // forward to the resource handler path
+        return "forward:/coverage/index.html";
     }
 
 }
+
