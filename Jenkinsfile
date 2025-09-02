@@ -5,14 +5,19 @@ pipeline {
         IMAGE_NAME = 'dewuruge/library'
         IMAGE_TAG = "${env.GIT_COMMIT.take(7)}" // short SHA as tag
         DOCKER_CREDENTIALS = 'dockerhub-credentials'
-        KUBECONFIG = '/var/lib/jenkins/.kube/config' // adjust path if different
-        DEPLOY_ENV = 'dev'  // can parametrize this for dev/stg/prod
+        KUBECONFIG = '/var/lib/jenkins/.kube/config' // path to kubeconfig
+    }
+
+    parameters {
+        string(name: 'DEPLOY_ENV', defaultValue: 'dev', description: 'Environment to deploy (dev/stg/prod)')
+        string(name: 'GIT_BRANCH', defaultValue: 'dev', description: 'Git branch to build')
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                git branch: 'dev', url: 'https://github.com/DNuvin/library-back-end.git'
+                git branch: "${params.GIT_BRANCH}", url: 'https://github.com/DNuvin/library-back-end.git'
             }
         }
 
@@ -22,55 +27,55 @@ pipeline {
             }
         }
 
+        stage('Run Tests & Coverage') {
+            steps {
+                sh './mvnw test jacoco:report'
+
+                // Copy JaCoCo report into resources/static/jacoco so it will be in Docker image
+                sh 'mkdir -p src/main/resources/static/jacoco'
+                sh 'cp -r target/site/jacoco/* src/main/resources/static/jacoco/'
+            }
+            post {
+                always {
+                    publishHTML(target: [
+                        reportDir: 'target/site/jacoco',
+                        reportFiles: 'index.html',
+                        reportName: "Code Coverage - ${params.DEPLOY_ENV}",
+                        keepAll: true
+                    ])
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-                }
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                script {
-                    docker.withRegistry('', "${DOCKER_CREDENTIALS}") {
-                        sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
-                    }
+                docker.withRegistry('', "${DOCKER_CREDENTIALS}") {
+                    sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
 
         stage('Apply Config & Secrets') {
             steps {
-                script {
-                    dir("k3s/${DEPLOY_ENV}") {
-                        sh """
-                        kubectl --kubeconfig=${KUBECONFIG} create configmap ${DEPLOY_ENV}-config \
-                            --from-env-file=config.env -n dev --dry-run=client -o yaml | kubectl apply -f -
+                dir("k3s/${params.DEPLOY_ENV}") {
+                    sh """
+                    kubectl --kubeconfig=${KUBECONFIG} create configmap ${params.DEPLOY_ENV}-config \
+                        --from-env-file=config.env -n ${params.DEPLOY_ENV} --dry-run=client -o yaml | kubectl apply -f -
 
-                        kubectl --kubeconfig=${KUBECONFIG} create secret generic ${DEPLOY_ENV}-secret \
-                            --from-env-file=secret.env -n dev --dry-run=client -o yaml | kubectl apply -f -
-                        """
-                    }
+                    kubectl --kubeconfig=${KUBECONFIG} create secret generic ${params.DEPLOY_ENV}-secret \
+                        --from-env-file=secret.env -n ${params.DEPLOY_ENV} --dry-run=client -o yaml | kubectl apply -f -
+                    """
                 }
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    sh """
-                    kubectl --kubeconfig=${KUBECONFIG} set image deployment/library \
-                        library-container=${IMAGE_NAME}:${IMAGE_TAG} -n ${DEPLOY_ENV} --record
-                    """
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            cleanWs()
-        }
-    }
-}
+                sh """
+                kubectl --kubeconfig=${KUBECONFIG} set image deployment/library \
