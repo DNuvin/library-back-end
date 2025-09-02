@@ -8,9 +8,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfigCoverage implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/coverage/**")
+
+        registry.addResourceHandler("/coverage/**", "/coverage/com.example.library.**")
                 .addResourceLocations("classpath:/static/jacoco/")
                 .setCachePeriod(0);
+
     }
 }
 
