@@ -10,7 +10,7 @@ public class WebConfigCoverage implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
         registry.addResourceHandler("/coverage/**")
-                .addResourceLocations("file:/app/static/jacoco/")  // Docker copy
+                .addResourceLocations("classpath:/static/jacoco/")
                 .setCachePeriod(0);
 
 
