@@ -5,9 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class JacocoController {
-
     @GetMapping("/coverage")
     public String coverage() {
-        return "redirect:/jacoco/index.html";
+        return "forward:/static/jacoco/index.html";
     }
 }
