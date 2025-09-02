@@ -1,12 +1,16 @@
 package com.example.library.domain.service;
 
-import com.example.library.application.Execeptions.*;
+import com.example.library.application.Execeptions.InvalidOperationException;
+import com.example.library.application.Execeptions.ResourceNotFoundException;
 import com.example.library.external.entities.Borrower;
 import com.example.library.external.entities.Book;
+import com.example.library.external.mappers.BorrowerMapper;
 import com.example.library.external.repository.BorrowerRepositoryInterface;
 import com.example.library.external.repository.BookRepositoryInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class BorrowerService {
@@ -20,20 +24,20 @@ public class BorrowerService {
         this.bookRepository = bookRepository;
     }
 
-    // Register a new borrower
+    // Register a new borrower and return DTO
     public Borrower registerBorrower(Borrower entity) {
-        // Optional: validate unique email
         return borrowerRepository.save(entity);
     }
 
-    // Borrow a book
+    // Borrow a book with row locking to prevent conflicts
     @Transactional
     public void borrowBook(Long borrowerId, Long bookId) {
         Borrower borrower = borrowerRepository.findById(borrowerId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Borrower not found with id: " + borrowerId));
 
-        Book book = bookRepository.findById(bookId)
+        // Lock the book row until transaction completes
+        Book book = bookRepository.findByIdForUpdate(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Book not found with id: " + bookId));
 
@@ -43,17 +47,17 @@ public class BorrowerService {
         }
 
         book.setBorrower(borrower);
-        bookRepository.save(book); // persist the change
+        bookRepository.save(book);
     }
 
-    // Return a book
+    // Return a borrowed book
     @Transactional
     public void returnBook(Long borrowerId, Long bookId) {
         Borrower borrower = borrowerRepository.findById(borrowerId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Borrower not found with id: " + borrowerId));
 
-        Book book = bookRepository.findById(bookId)
+        Book book = bookRepository.findByIdForUpdate(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Book not found with id: " + bookId));
 
@@ -64,5 +68,13 @@ public class BorrowerService {
 
         book.setBorrower(null);
         bookRepository.save(book);
+    }
+
+    // Get all borrowers as DTOs
+    public List<com.example.library.application.dto.BorrowerResponse> getAllBorrowers() {
+        return borrowerRepository.findAll()
+                .stream()
+                .map(BorrowerMapper::toResponse)
+                .toList();
     }
 }
