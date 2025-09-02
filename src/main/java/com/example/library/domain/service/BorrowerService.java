@@ -2,6 +2,7 @@ package com.example.library.domain.service;
 
 import com.example.library.application.Execeptions.InvalidOperationException;
 import com.example.library.application.Execeptions.ResourceNotFoundException;
+import com.example.library.application.dto.BorrowerResponse;
 import com.example.library.external.entities.Borrower;
 import com.example.library.external.entities.Book;
 import com.example.library.external.mappers.BorrowerMapper;
@@ -82,4 +83,15 @@ public class BorrowerService {
                 .map(BorrowerMapper::toResponse)
                 .toList();
     }
+
+    public BorrowerResponse getBorrowerById(Long id) {
+        log.info("Fetching borrower with ID: {}", id);
+        Borrower borrower = borrowerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Borrower not found with id: " + id));
+        BorrowerResponse response = BorrowerMapper.toResponse(borrower);
+        log.info("Returning borrower: {}", response.getName());
+        return response;
+    }
+
 }
