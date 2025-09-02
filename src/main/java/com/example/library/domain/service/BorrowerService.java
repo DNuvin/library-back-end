@@ -7,12 +7,14 @@ import com.example.library.external.entities.Book;
 import com.example.library.external.mappers.BorrowerMapper;
 import com.example.library.external.repository.BorrowerRepositoryInterface;
 import com.example.library.external.repository.BookRepositoryInterface;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class BorrowerService {
 
     private final BorrowerRepositoryInterface borrowerRepository;
@@ -24,8 +26,9 @@ public class BorrowerService {
         this.bookRepository = bookRepository;
     }
 
-    // Register a new borrower and return DTO
+    // Register a new borrower and return entity
     public Borrower registerBorrower(Borrower entity) {
+        log.info("Registering borrower: {}", entity);
         return borrowerRepository.save(entity);
     }
 
@@ -36,7 +39,6 @@ public class BorrowerService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Borrower not found with id: " + borrowerId));
 
-        // Lock the book row until transaction completes
         Book book = bookRepository.findByIdForUpdate(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Book not found with id: " + bookId));
@@ -48,6 +50,7 @@ public class BorrowerService {
 
         book.setBorrower(borrower);
         bookRepository.save(book);
+        log.info("Book {} successfully borrowed by borrower {}", bookId, borrowerId);
     }
 
     // Return a borrowed book
@@ -68,10 +71,12 @@ public class BorrowerService {
 
         book.setBorrower(null);
         bookRepository.save(book);
+        log.info("Book {} successfully returned by borrower {}", bookId, borrowerId);
     }
 
     // Get all borrowers as DTOs
     public List<com.example.library.application.dto.BorrowerResponse> getAllBorrowers() {
+        log.info("Fetching all borrowers from database");
         return borrowerRepository.findAll()
                 .stream()
                 .map(BorrowerMapper::toResponse)
