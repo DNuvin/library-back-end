@@ -21,17 +21,12 @@ pipeline {
             }
         }
 
-        stage('Build JAR') {
-            steps {
-                sh './mvnw clean package -DskipTests'
-            }
-        }
-
         stage('Run Tests & Coverage') {
             steps {
+                // Run tests and generate JaCoCo report first
                 sh './mvnw test jacoco:report'
 
-                // Copy JaCoCo report into resources/static/jacoco so it will be in Docker image
+                // Copy JaCoCo report into src/main/resources/static so it will be included in the jar
                 sh 'mkdir -p src/main/resources/static/jacoco'
                 sh 'cp -r target/site/jacoco/* src/main/resources/static/jacoco/'
             }
@@ -44,6 +39,13 @@ pipeline {
                         keepAll: true
                     ])
                 }
+            }
+        }
+
+        stage('Build JAR') {
+            steps {
+                // Now package jar including the copied JaCoCo files
+                sh './mvnw package -DskipTests'
             }
         }
 
