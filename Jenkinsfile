@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'dewuruge/library'
-        IMAGE_TAG = "${env.GIT_COMMIT.take(7)}" // short SHA as tag
+        IMAGE_TAG = "${env.GIT_COMMIT.take(7)}"
         DOCKER_CREDENTIALS = 'dockerhub-credentials'
-        KUBECONFIG = '/var/lib/jenkins/.kube/config' // path to kubeconfig
+        KUBECONFIG = '/var/lib/jenkins/.kube/config'
     }
 
     parameters {
@@ -79,3 +79,21 @@ pipeline {
             steps {
                 sh """
                 kubectl --kubeconfig=${KUBECONFIG} set image deployment/library \
+                    library-container=${IMAGE_NAME}:${IMAGE_TAG} -n ${params.DEPLOY_ENV} --record
+                """
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo "Deployment failed, rolling back..."
+            sh """
+            kubectl --kubeconfig=${KUBECONFIG} rollout undo deployment/library -n ${params.DEPLOY_ENV}
+            """
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
