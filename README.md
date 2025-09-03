@@ -42,7 +42,7 @@ This project is deployed on **AWS EC2** with **Kubernetes (K3s)** and uses **Jen
     - Username: `test_user`
     - Password: `test123`
     - Pipeline: `library-pipeline-dev`
-- **Docker Repository:** [https://hub.docker.com/repository/docker/dewuruge/library/general](https://hub.docker.com/repository/docker/dewuruge/library/general)
+- **Docker Repository:** [https://hub.docker.com/repository/docker/dewuruge/library/general](https://hub.docker.com/r/docker/dewuruge/library/tags)
 
 ---
 
