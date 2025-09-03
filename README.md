@@ -42,7 +42,7 @@ This project is deployed on **AWS EC2** with **Kubernetes (K3s)** and uses **Jen
     - Username: `test_user`
     - Password: `test123`
     - Pipeline: `library-pipeline-dev`
-- **Docker Repository:** [https://hub.docker.com/repository/docker/dewuruge/library/general](https://hub.docker.com/repository/docker/dewuruge/library/general)
+- **Docker Repository:** [https://hub.docker.com/r/docker/dewuruge/library/tags](https://hub.docker.com/r/docker/dewuruge/library/tags)
 
 ---
 
@@ -67,5 +67,11 @@ This project is deployed on **AWS EC2** with **Kubernetes (K3s)** and uses **Jen
 
 ## Notes
 
+## Notes
+
 - Environment configurations are managed using **ConfigMaps** and **Secrets**, enabling environment-agnostic deployments.
-- Book availability is tracked: a book cannot be borrowed by multiple users at the same time.  
+- Book availability is tracked: a book cannot be borrowed by multiple users at the same time.
+- **This setup is only for demonstration purposes**:
+    - Test coverage report exists but is **not fully covered**
+    - Only the `dev` environment is created under the `dev` namespace
+    - Only **one Jenkins pipeline** is configured to build and deploy the application  
