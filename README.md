@@ -68,11 +68,10 @@ This project is deployed on **AWS EC2** with **Kubernetes (K3s)** and uses **Jen
 
 ## Notes
 
-## Notes
-
 - Environment configurations are managed using **ConfigMaps** and **Secrets**, enabling environment-agnostic deployments.
 - Book availability is tracked: a book cannot be borrowed by multiple users at the same time.
 - **This setup is only for demonstration purposes**:
     - Test coverage report exists but is **not fully covered**
     - Only the `dev` environment is created under the `dev` namespace
-    - Only **one Jenkins pipeline** is configured to build and deploy the application  
+    - Only **one Jenkins pipeline** is configured to build and deploy the application
+    - The **`dev` branch** in GitHub triggers the **`library-pipeline-dev`** Jenkins pipeline
