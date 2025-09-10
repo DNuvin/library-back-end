@@ -139,7 +139,18 @@ docker-compose logs -f
 
 ---
 
-#### 6. Stop services
+#### 6. Example API request using curl
+```bash
+curl -X POST "http://localhost:8080/library-service/api/books" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "isbn": "978-1234567890",
+           "title": "Effective Java",
+           "author": "Joshua Bloch"
+         }'
+```
+
+#### 7. Stop services
 ```bash
 docker-compose down
 ```
