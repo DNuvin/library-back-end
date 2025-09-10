@@ -11,15 +11,24 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(
+        name = "borrowers",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email")
+        }
+)
 public class Borrower {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
+
+    @Column(nullable = false, unique = true) // ensures DB-level uniqueness
     private String email;
 
     @OneToMany(mappedBy = "borrower")
     private List<Book> borrowedBooks;
 }
+
 

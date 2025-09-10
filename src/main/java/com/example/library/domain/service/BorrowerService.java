@@ -30,6 +30,13 @@ public class BorrowerService {
     // Register a new borrower and return entity
     public Borrower registerBorrower(Borrower entity) {
         log.info("Registering borrower: {}", entity);
+
+        borrowerRepository.findByEmail(entity.getEmail()).ifPresent(b -> {
+            throw new InvalidOperationException(
+                    "A borrower with email " + entity.getEmail() + " already exists"
+            );
+        });
+
         return borrowerRepository.save(entity);
     }
 
