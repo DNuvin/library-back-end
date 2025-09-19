@@ -1,6 +1,6 @@
 package com.example.library.domain.boundary.repositories;
 
-import com.example.library.external.entities.Book;
+import com.example.library.domain.entities.Book;
 
 import java.util.Optional;
 

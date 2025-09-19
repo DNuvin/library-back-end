@@ -2,7 +2,7 @@ package com.example.library.external.mappers;
 
 import com.example.library.application.dto.BorrowerRequest;
 import com.example.library.application.dto.BorrowerResponse;
-import com.example.library.external.entities.Borrower;
+import com.example.library.domain.entities.Borrower;
 
 
 import java.util.stream.Collectors;
