@@ -2,8 +2,8 @@ package com.example.library.services;
 
 import com.example.library.application.Execeptions.InvalidOperationException;
 import com.example.library.domain.service.BorrowerService;
-import com.example.library.external.entities.Borrower;
-import com.example.library.external.entities.Book;
+import com.example.library.domain.entities.Borrower;
+import com.example.library.domain.entities.Book;
 import com.example.library.external.repository.BorrowerRepositoryInterface;
 import com.example.library.external.repository.BookRepositoryInterface;
 import org.junit.jupiter.api.BeforeEach;

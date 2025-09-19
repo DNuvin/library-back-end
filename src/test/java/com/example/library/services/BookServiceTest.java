@@ -2,7 +2,7 @@ package com.example.library.services;
 
 import com.example.library.application.dto.BookResponse;
 import com.example.library.domain.service.BookService;
-import com.example.library.external.entities.Book;
+import com.example.library.domain.entities.Book;
 import com.example.library.external.repository.BookRepositoryInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
