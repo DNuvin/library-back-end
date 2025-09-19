@@ -1,4 +1,4 @@
-package com.example.library.external.mappers;
+package com.example.library.application.mappers;
 
 import com.example.library.application.dto.BorrowerRequest;
 import com.example.library.application.dto.BorrowerResponse;
@@ -18,7 +18,7 @@ public class BorrowerMapper {
                 borrower.getEmail(),
                 borrower.getBorrowedBooks() == null ? null :
                         borrower.getBorrowedBooks().stream()
-                                .map(com.example.library.external.mappers.BookMapper::toResponse)
+                                .map(BookMapper::toResponse)
                                 .collect(Collectors.toList())
         );
     }

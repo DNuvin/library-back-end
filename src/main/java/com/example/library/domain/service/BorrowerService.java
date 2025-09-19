@@ -5,7 +5,7 @@ import com.example.library.application.Execeptions.ResourceNotFoundException;
 import com.example.library.application.dto.BorrowerResponse;
 import com.example.library.domain.entities.Borrower;
 import com.example.library.domain.entities.Book;
-import com.example.library.external.mappers.BorrowerMapper;
+import com.example.library.application.mappers.BorrowerMapper;
 import com.example.library.external.repository.BorrowerRepositoryInterface;
 import com.example.library.external.repository.BookRepositoryInterface;
 import lombok.extern.slf4j.Slf4j;

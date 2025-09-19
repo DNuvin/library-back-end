@@ -3,7 +3,7 @@ package com.example.library.application.controller;
 import com.example.library.application.dto.BookRequest;
 import com.example.library.application.dto.BookResponse;
 import com.example.library.domain.service.BookService;
-import com.example.library.external.mappers.BookMapper;
+import com.example.library.application.mappers.BookMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
