@@ -1,4 +1,4 @@
-package com.example.library.external.entities;
+package com.example.library.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

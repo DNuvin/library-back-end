@@ -2,7 +2,7 @@ package com.example.library.external.mappers;
 
 import com.example.library.application.dto.BookRequest;
 import com.example.library.application.dto.BookResponse;
-import com.example.library.external.entities.Book;
+import com.example.library.domain.entities.Book;
 
 public class BookMapper {
 

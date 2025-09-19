@@ -3,7 +3,7 @@ package com.example.library.application.controller;
 import com.example.library.application.dto.BorrowerRequest;
 import com.example.library.application.dto.BorrowerResponse;
 import com.example.library.domain.service.BorrowerService;
-import com.example.library.external.entities.Borrower;
+import com.example.library.domain.entities.Borrower;
 import com.example.library.external.mappers.BorrowerMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
