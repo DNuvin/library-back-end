@@ -2,7 +2,7 @@ package com.example.library.domain.service;
 
 import com.example.library.application.dto.BookResponse;
 import com.example.library.domain.entities.Book;
-import com.example.library.external.mappers.BookMapper;
+import com.example.library.application.mappers.BookMapper;
 import com.example.library.external.repository.BookRepositoryInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

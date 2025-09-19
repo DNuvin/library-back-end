@@ -1,4 +1,4 @@
-package com.example.library.external.mappers;
+package com.example.library.application.mappers;
 
 import com.example.library.application.dto.BookRequest;
 import com.example.library.application.dto.BookResponse;
